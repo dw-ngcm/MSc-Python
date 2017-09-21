@@ -21,6 +21,15 @@ T_total = 1.
 # - linspace syntax: (start, end, number_of_points)
 t = np.linspace(0, T_total-dt, fs*T_total)
 
+# is this the best way to make a time vector?
+# I prefer   t = np.arange(0,T_total,dt)
+# as it's easier to remember and
+# makes more semantic sense with the underlying data structure:
+# every tick is dt in length, from 0, up to but not including T_total.
+# np.diff(t)[0] = dt and max(t) = t[-1] = T-total-dt like before
+#
+
+
 # open a new figure and plot the time base
 plt.figure()
 plt.plot(t)
@@ -59,7 +68,7 @@ blockLength = 512
 # --> in Ubuntu:  audioApi = 'ALSA'
 # --> in OSX:     audioApi = 'CoreAudio'
 
-duplexAudio(x*gain, fs, blockLength, audioApi='CoreAudio')
+duplexAudio(x*gain, fs, blockLength, audioApi='ALSA')
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 import scipy.io.wavfile as wavio
@@ -123,7 +132,7 @@ def fourier_sine(f0, bn, t):
         bn - array - fourier sine coefficients
         t - array - time vector
     '''
-    x = np.zeros(t.shape[0])
+    x = np.zeros(t.shape[0]) # make an output array in the same shape as t
 
     for n, b in enumerate(bn):
         x += b*np.sin(2*np.pi*n*f0*t)
@@ -138,6 +147,8 @@ T_max = 0.4
 f0 = 400
 
 t = np.linspace(0, T_max-dt, fs*T_max)
+
+# better to use
 
 plt.figure()
 
