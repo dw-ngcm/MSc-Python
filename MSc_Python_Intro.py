@@ -22,12 +22,12 @@ T_total = 1.
 t = np.linspace(0, T_total-dt, fs*T_total)
 
 # is this the best way to make a time vector?
-# I prefer   t = np.arange(0,T_total,dt)
+# I prefer:
+# t = np.arange(0,T_total,dt) [start,stop,step]
 # as it's easier to remember and
-# makes more semantic sense with the underlying data structure:
+# makes more semantic sense with the underlying data structure, i.e.
 # every tick is dt in length, from 0, up to but not including T_total.
 # np.diff(t)[0] = dt and max(t) = t[-1] = T-total-dt like before
-#
 
 
 # open a new figure and plot the time base
@@ -87,6 +87,16 @@ plt.plot(t, x_wav, "b-")
 plt.title("file1")
 plt.xlabel("Time [s]")
 plt.ylabel("Amplitude")
+
+# Can you write a line of code to listen to the file?
+# What about in reverse?
+# Or repeated twice? investigate np.repeat and np.tile
+# Or double speed?
+
+duplexAudio(np.flipud(x_wav), fs,512)
+x_wav_2 = np.tile(x_wav,2)
+duplexAudio(x_wav_2,fs,512)
+duplexAudio(x_wav,fs*2,512)
 
 # %%
 
@@ -148,14 +158,23 @@ f0 = 400
 
 t = np.linspace(0, T_max-dt, fs*T_max)
 
-# better to use
+# or np.arange(0,T_max,dt)
 
-plt.figure()
+#FFT parameters
+N_dft = 2048
+df = fs/N_dft
+freq = np.linspace(0, fs-df, N_dft)
 
-for N_saw in range(1, 5):
-    saw_sine = fourier_sine(f0, bm_saw(N_saw), t)
+for N_saw in range(5):
+    print('N_saw = {}'.format(N_saw))
+    saw_sine = fourier_sine(f0, bm_saw(N_saw*2), t)
+    plt.figure(4)
     plt.plot(t[:2*fs//f0], saw_sine[:2*fs//f0])
 
+    SAW_SINE = np.fft.fft(saw_sine, n=N_dft)
+
+    plt.figure(5)
+    plt.semilogx(freq[:N_dft//2], 20*np.log10(np.abs(SAW_SINE[:N_dft//2])))
     duplexAudio(outputSignal=saw_sine,
                 samplingFrequency=fs,
                 blockLength=512,
