@@ -2,8 +2,6 @@
 MSc Python Intro
 """
 
-
-
 # %%
 
 import numpy as np
@@ -107,15 +105,24 @@ plt.plot(t1[n_max], x1[n_max], 'rs')
 # fourier sine series of sawtooth wave
 
 def bm_saw(M):
-    m = np.arange(M)
-    bm = -2*((-1)**m)/(np.pi*m)
-
-    bm[0] = 0
-
+    '''Create the first M fourier series coefficients for a sawtooth wave'''
+    bm = np.zeros(M)  # Make a new array for the M coefficients
+    # the first bm coefficient is always zero,
+    # so we only need to set the indices 1 to M-1
+    # remember numpy arrays are indexed starting from zero
+    m = np.arange(1, M)  # Make an array of numbers from 1 to M-1
+    # Calculate b_m coefficients from eq. 1. to all m's simultaneously
+    bm[1:M] = -2*((-1)**m)/(np.pi*m)
     return bm
 
 
 def fourier_sine(f0, bn, t):
+    '''Compute a signal x from sinusoidal fourier components
+
+        f0 - scalar - fundamental frequency of sinusoidal components
+        bn - array - fourier sine coefficients
+        t - array - time vector
+    '''
     x = np.zeros(t.shape[0])
 
     for n, b in enumerate(bn):
@@ -138,7 +145,10 @@ for N_saw in range(1, 5):
     saw_sine = fourier_sine(f0, bm_saw(N_saw), t)
     plt.plot(t[:2*fs//f0], saw_sine[:2*fs//f0])
 
-    duplexAudio(saw_sine, fs, 512, audioApi='ALSA')
+    duplexAudio(outputSignal=saw_sine,
+                samplingFrequency=fs,
+                blockLength=512,
+                audioApi='ALSA')
 
 # %%
 # create array with a single zero
