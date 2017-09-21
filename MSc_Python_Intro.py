@@ -59,8 +59,9 @@ blockLength = 512
 # using defaults for arguments (audio API, number of record channels (0), etc.)
 # --> in Windows: audioApi = 'MME'
 # --> in Ubuntu:  audioApi = 'ALSA'
+# --> in OSX:     audioApi = 'CoreAudio'
 
-duplexAudio(x*gain, fs, blockLength, audioApi='ALSA')
+duplexAudio(x*gain, fs, blockLength, audioApi='CoreAudio')
 
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 import scipy.io.wavfile as wavio
