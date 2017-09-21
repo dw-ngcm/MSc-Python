@@ -1,0 +1,5 @@
+on OSX
+at pip install pyaudio
+got error: command 'gcc' failed with exit status 1
+need command line developer tools - run 'xcode-select --install' in the terminal
+solution found here > https://people.csail.mit.edu/hubert/pyaudio/
