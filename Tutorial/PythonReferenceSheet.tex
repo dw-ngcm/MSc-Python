@@ -1,0 +1,641 @@
+
+This document contains a selection of Python commands to be typed and executed at the IPython console; they should demonstrate the functionalities of the main commands and variable types you will probably use when programming in Python. Before running the commands, we would like you to think what will be the console output, and to explain why you think so based on your knowledge of the Python programming language. You don't have to remember all the details presented in this sheet, but you might want to go through them all at least once.
+
+You are also encouraged to find resources and learn by yourself whenever necessary; there is a plethora of resources on Python programming on the internet, and we suggest a few references at the end of this reference sheet. This material is heavily inspired by the \emph{Scipy Lecture Notes} (see References).
+
+\newpage
+
+\section{Variable Types}
+
+Variables are defined by assigning a value to a name using the equality (``='') operator. Think of the variable name as a ``label'' associated with a particular location in the computer memory where the value is stored; pre-existing names can be redefined inside the code, and multiple names can reference the same variable.
+
+\begin{lstlisting}[frame=single]
+a = 3
+type(a)
+print(a)
+
+b = 2*a
+type(b)
+b
+
+a*b
+a**b
+
+# variable type can change during execution
+b = "hello"
+type(b)    
+print(b)
+
+b + b
+3*b
+\end{lstlisting}
+
+% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+\section{Numerical Variable Types}
+
+Numerical variables can be of type {\tt int} (integer), {\tt float} (floating-point number) or {\tt complex} (complex number).
+
+\begin{lstlisting}[frame=single]
+a = 4
+type(a) 
+
+b = 2.1
+type(b)
+
+# type conversion
+c = float(1)
+type(c)
+
+# conversion to integer is not the same as rounding!
+int(2.1)
+round(2.1)
+
+int(2.9)
+round(2.9)
+
+# complex type (real plus imaginary parts)
+d = 1.5 + 0.5j
+type(d)
+d.real
+d.imag
+
+\end{lstlisting}
+
+NOTE: Integer division has different behaviours in Python 2 (where {\tt int / int = int}) and Python 3 (where {\tt int / int = float}); pay attention to the variable types, and think what is the behaviour you want from your code. If in doubt, use explicit type conversion.
+
+The floor division ({\tt //}) and the modulo ({\tt \%}) operators are connected through the expression {\tt x == (x//y)*y + (x\%y)}.
+
+\begin{lstlisting}[frame=single]
+a = 3
+b = 2
+
+# In Python 2 , this is equal to 1; in Python 3, this is equal to 1.5
+a / b
+
+# using explicit type conversion to force float division
+a / float(b)
+3/2.
+
+# floor division
+a//b
+
+# If one operand is float, result is also float!
+float(a)//b
+
+# modulo operator
+a % b
+\end{lstlisting}
+
+% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+\section{Lists and Tuples}
+
+Lists are ordered collection of objects, which can be of different types. Indexing starts at zero, and negative indexes allow counting backwards from the end of the list.
+
+\begin{lstlisting}[frame=single]
+L = ["red", "blue", "green", "black", 1001.099]
+
+type(L)
+len(L)
+
+L[1]
+L[0]
+
+L[-1]
+L[-4]
+
+# list elements can be changed
+L[3] = 1000
+L
+\end{lstlisting}
+
+Slicing results in sublists of regularly-spaced elements: {\tt [start:stop]} returns all elements with indexes {\tt start <= i < stop} (i.e. {\tt i} ranges from {\tt start} to {\tt stop-1}, so that {\tt stop-start} elements are returned). One can also add a step size using the synthax {\tt [start:stop:step]}.
+
+\begin{lstlisting}[frame=single]
+L[0:3]
+
+L[2:3]
+
+L[0:4:2]
+
+L[:]
+
+L[::-1]
+\end{lstlisting}
+
+
+Tuples are similar constructs to lists, but are immutable and generally use round brackets.
+
+\begin{lstlisting}[frame=single]
+t3 = ("John", "Johanna", 999)
+
+type(t3)
+
+t3[2]
+
+# tuples cannot be changed
+t3[1] = 10
+
+# single-element and empty tuples are valid
+u = (10,)
+v = ()
+
+# tuples can be simultaneously unpacked
+t0, t1, t2 = t3
+
+type(t0)
+type(t2)
+\end{lstlisting}
+
+% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+\section{Strings}
+
+Strings are ``lists of characters'', and are indexed just like lists.
+
+\begin{lstlisting}[frame=single]
+a = "hello, world!"
+a[3:6]
+
+a[2:10:2]
+
+a[::3]
+\end{lstlisting}
+
+String formatting allow the creation of strings using previously defined variables.
+
+\begin{lstlisting}[frame=single]
+a = 1
+b = 0.1
+name = "John"
+print("An integer: {}; a float: {}; another string: {}".format(a, b, name))
+
+# use three decimal places for float inside string
+pi = 3.14159265359
+"The number pi can be approximated as {:.3f}".format(pi)
+
+# exponential notation with two decimal places
+"The number 123456 can be approximated as {:.2e}".format(123456)
+\end{lstlisting}
+
+% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+\section{Control Flow}
+
+\subsection{{\tt if} tests}
+{\tt if} tests allow for conditional execution of code when a given condition tests true; alternative tests can be added using {\tt elif}, and exceptions to all tests are dealt with by using {\tt else}.
+
+Note that blocks are denoted by indentation; this can be achieved with the {\tt Tab} key, or with a consistent number of whitespaces (normally four; Spyder automatically ``translates'' {\tt Tab}s to four whitespaces).
+
+\begin{lstlisting}[frame=single]
+condition = True
+if condition:
+    print("It's true!")
+
+# one equal sign means variable assignment;
+# two equal signs means comparison!
+a = 5
+
+if (2+2 == a):
+    print("It's four!")
+elif a < 0:
+    print("It's negative!")
+elif (a < 4) and (a > 0):		# conditions can be concatenated
+    print("It's less than four, but positive!")
+else:
+    print("It's more than four!")
+\end{lstlisting}
+
+\subsection{{\tt for} loops}
+{\tt for} loops allow the repeated execution of a given piece of code while iterating over a counter or sequence.
+
+\begin{lstlisting}[frame=single]
+# can iterate over elements of a sequence
+for word in ("cool", "easy", "fun"):
+    print("Audio is {}".format(word))
+
+# The iterator 'range' also follows the (start, stop, step) notation
+for i in range(4, 10, 2):
+    print(i)
+\end{lstlisting}
+
+When looping over the entries in a list, it is important to keep in mind the differences between the \emph{index} of a list entry and the \emph{content} of the list entry; using the built-in function {\tt enumerate} might help with that:
+
+\begin{lstlisting}[frame=single]
+x = [2, 4, 6, 8, 10]
+
+# 'i' is the index, 'xi' is the content
+for i, xi in enumerate(x):
+    print("The {}-th entry in x is {}".format(i, xi))
+\end{lstlisting}
+
+% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+\section{Functions}
+
+Functions allow the encapsulation and abstraction of a task, and thus stimulates reusing code instead of rewriting code. Python function calls use parentheses (round brackets) for the function arguments; functions return {\tt None} by default, unless explicitly stated otherwise.
+
+\begin{lstlisting}[frame=single]
+def double_it(x):
+    """Concise one-line sentence describing the function.
+
+    Complete function documentation, which can contain multiple
+    paragraphs. This text should appear on your 'Help' pane when
+    you write the function in the Editor or console and help you
+    use it correctly."""
+	
+    return x * 2
+
+double_it?
+
+double_it(3)
+
+double_it()
+\end{lstlisting}
+
+Python functions can have default argument values for when a function is called without one or more of its arguments.
+
+\begin{lstlisting}[frame=single]
+def power_it(x = 2, y = 2):
+    return x**y
+
+power_it(3, 3)
+
+power_it(3)
+
+power_it()
+\end{lstlisting}
+
+% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+\section{Numpy}
+
+Numpy is the ``numerical Python'' module; it contains its own homogeneous, multi-dimensional array type, which is useful for fast numerical calculations. One-dimensional arrays are equivalent to vectors (in the mathematical sense), and its elements are indexed using a single index; two-dimensional arrays are equivalent to matrices (in the mathematical sense), and its elements are indexed using two indices; and etc. Numpy must be imported before being used.
+
+\begin{lstlisting}[frame=single]
+import numpy as np
+
+# notice lists (and lists of lists) are used as input
+# arguments for creating arrays
+a = np.array([0, 1, 2, 3])		# 1D array
+b = np.array([[0, 1, 2], [3, 4, 5]])	# 2D array (2x3)
+
+a
+b
+
+# 'shape' of array: number of elements in each dimension
+a.shape
+b.shape
+
+# 'size' of array: total number of elements
+a.size
+b.size
+
+# check type of elements inside array
+a.dtype
+
+# arrays use same indexing as lists
+a[1]
+b[0, 1]
+
+b[1]
+
+# slicing works independently in each dimension
+b[0, :]
+b[:, 0]
+\end{lstlisting}
+
+Some common functions for creating arrays are shown below.
+
+\begin{lstlisting}[frame=single]
+# arange: (start, end (not included), step_size)
+b = np.arange(1, 9, 2) 
+b
+
+# linspace: (start, end, number_of_points)
+# endpoint can be included (True - default behaviour) or not (False)
+c = np.linspace(0, 1, 6)
+c
+
+c = np.linspace(0, 1, 6, endpoint=False)
+c
+
+# zeros: creates an array full of zeros
+# note that the tuple '(2, 3)' is considered a single input argument!
+z = np.zeros((2, 3))
+z
+
+# sometimes it is worth creating a matrix of 'complex zeros'
+z_complex = np.zeros((3, 3), 'complex')
+z_complex.dtype
+z_complex
+
+# ones: similar behaviour as 'zeros'
+o = np.ones((3, 5))
+o
+
+# create array of random numbers (normal/Gaussian distribution)
+r = np.random.randn(10)
+r
+\end{lstlisting}
+
+Arrays can be read and modified using their indexes; each dimension requires a separate index.
+
+\begin{lstlisting}[frame=single]
+array_shape = (4, 4)
+A = np.zeros(array_shape)
+A
+
+A[1, 3] = np.pi
+A
+
+b = np.arange(5, 9)
+A[2, :] = b
+A
+
+d = np.array([1, 2, 3])
+# sum with existing content (instead of overwriting)
+A[1:, 0] += d
+A
+\end{lstlisting}
+
+
+Note that {\tt np.arange} is NOT recommended for non-integer steps, because it is prone to errors due to numerical precision. If non-integer intervals are required, we highly recommend using {\tt np.linspace} instead.
+
+\begin{lstlisting}[frame=single]
+# How many elements should this array contain?
+# What should be their values?
+#   --> Remember: arange should NOT include the endpoint!
+a = np.arange(0, 1, 1./10)
+a
+a.size
+a[-1]
+
+# How many elements should this array contain?
+# What should be their values?
+b = np.arange(0, 1, 1./49)
+b
+b.size
+b[-1]
+
+c = np.linspace(0, 1, 10, endpoint=True)
+c
+c.size
+c[-1]
+
+d = np.linspace(0, 1, 49, endpoint=True)
+d
+d.size
+d[-1]
+\end{lstlisting}
+
+Array operations are almost always performed element-wise:
+
+\begin{lstlisting}[frame=single]
+x = np.arange(5)
+
+x+2
+
+x*3
+
+x**3
+
+np.sqrt(x)
+
+x*x
+
+np.exp(x)
+
+# base-10 logarithm
+np.log10(x)
+\end{lstlisting}
+
+Some operations are not performed element-wise; amongst those, we include the dot product (matrix multiplication when applied to 2D arrays, and vector inner product when applied to 1D arrays) and the cross product (also known as outer product). The performance of these operations on \emph{N}-D arrays is more complex, be careful with unexpected results.
+
+\begin{lstlisting}[frame=single]
+x = np.arange(3)
+y = np.arange(4, 7)
+A = np.arange(9).reshape((3, 3))
+
+# dot product / inner product
+np.dot(x, y)
+
+np.dot(A, x)
+
+# on newer Numpy versions, '@' can be used for
+# matrix product (in the mathematical sense)
+np.dot(A, x) == A @ x
+
+# cross product / outer product
+np.outer(x, y)
+\end{lstlisting}
+
+Numpy arrays can also be concatenated, as long as their respective shapes match; there are other methods for concatenating arrays, try to research the others.
+
+\begin{lstlisting}[frame=single]
+x = np.array([[0., 0.1, 0.2], [0.3, 0.4, 0.5]])
+y = np.array([[1., 1.1, 1.2], [1.3, 1.4, 1.5]])
+
+x.shape
+y.shape
+
+# function argument is a tuple '(x, y)'
+z1 = np.concatenate((x, y))			# 1st axis by default
+z1.shape
+z1
+
+z2 = np.concatenate((x, y), axis=1)
+z2.shape
+z2
+
+
+\end{lstlisting}
+
+\section{Matplotlib}
+The Matplotlib module is a very powerful module for plotting, but can be a bit cumbersome to use; we recommend using the {\tt pyplot} interface, which adopts a {\tt MATLAB}-like style and simplifies some of the most common commands. It must be imported before being used.
+
+The Scipy Lectures website has a very good ``Quick Reference'' guide for Matplotlib commands; see References.
+
+\begin{lstlisting}[frame=single]
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 1D data
+x = np.linspace(-np.pi, np.pi, 256)
+y1 = np.cos(x)
+y2 = np.sin(x)
+
+plt.figure()
+plt.plot(x, y1, label="y1")
+plt.plot(x, y2, 'ro', label="y2")
+
+plt.xlabel("x label")
+plt.ylabel("y label")
+plt.title("Simple Plot")
+plt.legend()
+plt.savefig("fig_name.png")
+
+\end{lstlisting}
+
+
+\section{Playing and Recording Sound Files}
+
+We will now instruct you on how to play and record sound files in your computer using Python. We will use the {\tt pyaudio} module, but we will interact with it using the wrapper functions available in the {\tt duplexAudio} module. First, we need to import the required modules:
+
+\begin{lstlisting}[frame=single]
+# no need to import 'pyaudio' explicitly;
+# 'duplexAudio' does that internally
+from duplexAudio import duplexAudio
+from wavToFloat import wavToFloat
+
+# functions to create periodic signals
+from scipy.signal import square, sawtooth
+
+# functions to read and write .wav files
+import scipy.io.wavfile as wavio
+
+import numpy as np
+\end{lstlisting}
+
+\subsection{Reading a {\tt .wav} File}
+
+First, let us inspect the contents of a Wave file, as used by any media player of preference. This is an audio file format standard used to store an audio bitstream, similarly to the method used to store music in CDs; such files are usually recognised by their {\tt .wav} extension. Wave files store each sample as a signed {\tt N\_bits} integer (i.e. the first bit contains the sign and is not used to store amplitude data); for example, CD audio uses 16 bits per sample.
+
+The {\tt scipy.io.wavfile} module allows for reading and writing Wave files and obtaining their bitstream. However, audio data is often manipulated using floating-point representation (such as Numpy arrays), and it is then necessary to convert the data type to Python's {\tt float} type; for this, we can use the {\tt wavToFloat} module, also available from Blackboard.
+
+Before running this next example, make sure the {\tt .wav} file is located inside the current Spyder working directory; the file should be visible to you in the ``File Explorer'' pane.
+
+\begin{lstlisting}[frame=single]
+# obtain the sampling frequency and the bitstream
+fs, xRaw = wavio.read("file1.wav")
+
+# Convert the samples to float if necessary.
+x = wavToFloat(xRaw)
+
+# Plot the waveform
+t = np.linspace(0, (x.shape[0]-1)/fs, x.shape[0])
+plt.plot(t, x, "b-")
+plt.title("file1")
+plt.xlabel("Time [s]")
+plt.ylabel("Amplitude")
+\end{lstlisting}
+
+Explore the waveform by zooming in and out using the magnifying glass and the quad arrow buttons in the Figure window; try zooming in around any particular features you believe might be important.
+
+Now, let us play to the Wave file recording:
+
+\begin{lstlisting}[frame=single]
+# Scale the test signal to avoid clipping and numerical errors
+gain = 0.5
+x *= gain
+
+# Set the block length for replaying the audio signal.
+blockLength = 1024
+
+# Use the provided library function to play back the file
+# using defaults for arguments
+#
+# Recommended default APIs:
+# --> in Windows: audioApi = "MME"
+# --> in Linux/Ubuntu:  audioApi = "ALSA"
+# --> in Mac: audioApi = "CoreAudio"
+duplexAudio(x, fs, blockLength, audioApi="MME")
+\end{lstlisting}
+
+\textbf{IMPORTANT}: Note that this audio file stream is going directly to the audio output, and thus it might be \textbf{LOUD}! Please remember to turn down the volume of your sound reproduction system (headphones or computer speakers) before playing any audio file, and then turn the volume up until you reach a comfortable listening level!
+
+Let us now create some signals and listen to them:
+\begin{lstlisting}[frame=single]
+# create a vector of time samples
+T0 = 1.             # signal length [s]
+dt = 1/fs
+t = np.linspace(0, T0-dt, T0*fs)
+
+f0 = 440           # frequency of A4 note [Hz]
+
+# create and plot a sine wave
+x_sin = 0.25*np.sin(2*np.pi*f0*t)
+
+plt.figure()
+plt.plot(t[:500], x_sin[:500])  # plot the first 500 samples
+plt.title("Sine Wave")
+plt.xlabel("Time [s]")
+plt.ylabel("Amplitude")
+plt.grid()
+
+# create and plot two square waves
+x_square05 = 0.1*square(2*np.pi*f0*t, duty=0.5)
+x_square02 = 0.1*square(2*np.pi*f0*t, duty=0.2)
+
+plt.figure()
+plt.plot(t[:500], x_square05[:500])
+plt.plot(t[:500], x_square02[:500], "-.")
+plt.title("Square Waves")
+plt.xlabel("Time [s]")
+plt.ylabel("Amplitude")
+
+# create and plot a sawtooth wave
+x_saw = 0.1*sawtooth(2*np.pi*f0*t)
+
+plt.figure()
+plt.plot(t[:500], x_saw[:500])
+plt.title("Sawtooth Wave")
+plt.xlabel("Time [s]")
+plt.ylabel("Amplitude")
+
+# play the waveforms
+duplexAudio(x_sin, fs, blockLength, audioApi="MME")
+duplexAudio(x_square05, fs, blockLength, audioApi="MME")
+duplexAudio(x_square02, fs, blockLength, audioApi="MME")
+duplexAudio(x_saw, fs, blockLength, audioApi="MME")
+\end{lstlisting}
+
+Finally, {\tt pyaudio/duplexAudio} allows for simultanous playback and recording of audio data; this next example will demonstrate how this can be done by recording a few seconds of data, plotting the recorded waveform, and then playing it back to you.
+
+Note that the file being played back and the recorded file need not have the same length; hence, if you don't want to play anything while recording, you only need to ``play'' a Numpy array containing a few zeros.
+
+\begin{lstlisting}[frame=single]
+# create array with a single zero
+x_silence = np.zeros(1)
+
+# record 2 s of data and save in array 'y'
+y = duplexAudio(x_silence, fs, blockLength, recordLength=2, audioApi="MME")
+
+# create vector of time samples
+t2 = np.array(0, 2-(1/fs), 2*fs)
+
+# plot vector 'y'
+plt.figure()
+plt.plot(t2, y)
+plt.xlabel("Time [s]")
+plt.ylabel("Amplitude")
+
+# play the recorded file 'y'
+duplexAudio(y, fs, blockLength, audioApi="MME")
+\end{lstlisting}
+
+% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+\section{References}
+
+Some useful references:
+\begin{itemize}
+	\item Prof. Hans Fangohr's \emph{``Python for computational science and engineering''} textbook and slides
+	\item[] {\footnotesize \url{http://www.southampton.ac.uk/~ fangohr/teaching/index.html}}
+	
+	\item Scipy Lecture Notes:
+	\item[] {\footnotesize \url{http://www.scipy-lectures.org/}}
+	
+	\item Software Carpentry \emph{``Programming with Python''} lessons:
+	\item[] {\footnotesize \url{http://software-carpentry.org/lessons/}}
+
+	\item Python's Official Tutorial:
+	\item[] {\footnotesize \url{https://docs.python.org/3/tutorial/}}
+	
+	\item Matplotlib's Pyplot Tutorial:
+	\item[] {\footnotesize \url{https://matplotlib.org/users/pyplot_tutorial.html}}
+	
+	\item \emph{``Best Practices for Scientific Computing''} paper:
+	\item[] {\footnotesize \url{http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001745}}
+	
+	\item \emph{``Good Enough Practices in Scientific Computing''} paper:
+	\item[] {\footnotesize \url{http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005510}}
+\end{itemize}
+
+Please note that this revision does not cover everything about programming with Python. There is a wide range of tutorials and sources about Python on the internet, and you are expected to search for more information and learn new things by yourself.
+
+We recommend reading the articles \emph{``Best Practices for Scientific Computing''} and \emph{``Good Enough Practices in Scientific Computing''}, written by some of the colaborators of the Software Carpentry team. While we acknowledge that following the series of ``best practices'' to the letter can be very demanding, it is important to at least be aware of what are considered best practices and why; meanwhile, the ``good enough'' practices are more straightforward to implement and within immediate reach of a researcher working by him/herself.

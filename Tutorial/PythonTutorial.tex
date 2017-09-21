@@ -1,0 +1,277 @@
+\section{Setting Up}
+
+This Tutorial session aims to provide a brief revision of programming concepts using Python. We will use the Anaconda Python Distribution, a Python-language-based ``ecosystem'' which is free, already contains the essential packages for scientific computing and can easily be downloaded from the internet\footnote{Available at \url{https://conda.io/docs/install/quick.html}}. Anaconda should already be available when you log in University computers, but you are free to use your own personal computer if you wish to. If this is your first time installing Python in your personal computer, we urge you to adopt Python version 3.6 instead of version 2.7.
+
+The Anaconda Python Distribution includes a command-line package manager application called {\tt conda} that allows the user to quickly install, run, and update packages and their dependencies:
+
+\begin{itemize}
+	\item In Windows, {\tt conda} commands must be run in the ``Anaconda Prompt'', located within the ``Anaconda'' folder in your Start Menu;
+	\item In Unix systems, the {\tt conda} command can be run directly in the Unix Shell (Bash).
+\end{itemize}
+
+We provide an example of how to upgrade a package in the next section; more information can be obtained from \url{https://conda.io/docs/test-drive.html#managing-conda}.
+
+\subsection{The Spyder IDE}
+
+We will use the Spyder Interactive Development Environment (IDE), which is included in Anaconda; it should be available at the Start Menu (in Windows machines) after installing Anaconda. By default, the Spyder IDE contains a file editor on the left-hand side, an IPython (``Interactive Python'') console on the bottom right, and a ``Variable Explorer''/``File Explorer''/``Help'' pane on the top right. An excellent tutorial of Spyder's main functionalities is available inside Spyder itself, via the ``Help'' menu - ``Spyder Tutorial''; make sure to have a look at it.
+
+You will often be required to download and use special functions and data files in your codes; make sure these files are ``visible'' to your current Python program by having the Spyder working directory set to the same folder where they are located. Remember to always check if the current Spyder working directory, displayed on the top right of the Spyder screen, is set to the correct location; if not, you can change directory via the directory bar itself or via the ``File Explorer'' pane.
+
+\subsubsection{Updating Spyder}
+
+A new version of the Spyder IDE is released every few months, and we recommend keeping your local Spyder installation always up-to-date; this can be done with {\tt conda} by running the command
+
+\begin{lstlisting}[frame=single]
+conda update spyder
+\end{lstlisting}
+
+inside the ``Anaconda Prompt'' for Windows machines, or inside the shell for Unix machines. We assume you will be running the most recent version of Spyder, so be sure to update Spyder immediately after installing the Anaconda Python Distribution in your personal computer. You don't have to worry with this when using University computers.
+
+\subsubsection{Configuring Spyder}
+
+Before starting the module, we would like to ask you to adjust some options in Spyder for a more interactive and user-friendly experience. In Spyder, go to ``Tools'' - ``Preferences'' and:
+
+\begin{itemize}
+	\item In ``IPython Console'' - ``Graphics'', select \emph{Automatic} as your default graphics backend; this should allow new figures to pop up as new windows (instead of being embedded in the IPython console), allowing you to manually inspect them using the zoom tools;
+	\item In ``Run'' - ``General Settings'', make sure that \emph{Clear all variables before execution} is selected (ticked); as the description suggests, this functionality will delete previously created variables from your workspace when you run a file, so you can be sure that only variables you have explicitly created for this file will be using your memory;
+	\item While still in ``Preferences'', we also suggest going to ``Help'' and enabling the automatic connections to be made for both the Editor and for the IPython console; that will enable the ``Help'' pane  (located right above the console) to automatically open the documentation for a particular function you start to write either at the Editor or at the console. The functions documentation usually include a short description of the function, the types of input and output variables it accepts and returns, and sometimes a few examples of its use.
+\end{itemize}
+
+
+\subsection{The {\tt pyaudio} module}
+
+By default, neither the Python language library nor the Anaconda Python Distribution contain functionalities for playing and recording sound files directly from a Python script or the IPython console. In order to do that, we need to use an external module called {\tt pyaudio}; it provides Python bindings for PortAudio, a very popular cross-platform audio I/O library.
+
+{\tt pyaudio} is already installed in the University computers, so you shouldn't have to worry with it. In order to install {\tt pyaudio} in your own computer, we need to use {\tt pip}, a more generic Python package manager - i.e. not limited to the Anaconda environment; please run
+
+\begin{lstlisting}[frame=single]
+pip install pyaudio
+\end{lstlisting}
+
+inside the ``Anaconda Prompt'' for Windows machines - or inside the shell for Unix machines - to install {\tt pyaudio}. You should only need to do this once.
+
+\subsubsection{The {\tt duplexAudio} module}
+
+The {\tt pyaudio} package, while very powerful, is not very straightforward to use. Hence, we will provide a Python module called {\tt duplexAudio}, developed by ISVR researchers, that implements a more user-friendly set of functions around {\tt pyaudio}.
+
+Once downloaded, we suggest permanently moving the {\tt duplexAudio.py} file to a folder of your preference; in order to use {\tt duplexAudio} within Spyder, we must add the folder location to the {\tt PYTHONPATH}:
+
+\begin{itemize}
+	\item Go to ``Tools'' - ``PYTHONPATH manager'', select ``Add path'', and select the folder where {\tt duplexAudio} is located;
+	\item Close the ``PYTHONPATH manager'' and restart Spyder.
+\end{itemize}
+
+This concludes the setting up process; you should now be able to use {\tt duplexAudio} in your Python scripts, as will be demonstrated below.
+
+\section{Introduction to Python}
+
+Python is a general-purpose programming language, with a large number of modules available for scientific computing. This tutorial will cover some basic programming concepts, such as: creating arrays of numeric data, manipulating and plotting data.
+
+You will receive a script containing sections of code, but some parts will be missing; use the IPython console to interact with the available data and fill in the gaps with your own code.
+
+\subsection{Creating and Plotting Signals}
+
+We will start by creating and plotting some signals. We will use the Numpy package to create and manipulate $N$-dimensional arrays of sampled data, and the Pyplot framework (a part of the Matplotlib package) to plot data; see the reference sheet for general instructions on the Python language and these packages.
+
+Signals are generally obtained from experimental data as a series of values sampled from a sensor at equispaced time instants; each sample is stored as a single number, and the collection of samples is generally stored as a one-dimensional array (i.e. a ``vector''). Most signals are a function of time, and hence we must start by creating and plotting the time base: an array containing the time instants at which the signal values are sampled or generated.
+
+\begin{lstlisting}[frame=single]
+# import the necessary modules
+import numpy as np
+import matplotlib.pyplot as plt
+
+# define a sampling frequency (in Hz)
+fs = 44100
+
+# sampling interval (in seconds)
+dt = 1/fs
+
+# total length for the time base (in seconds)
+T_total = 0.5
+
+# create a time base using 'np.linspace' command
+# -> syntax: np.linspace(start, end, number_of_points)
+t = np.linspace(0, T_total-dt, fs*T_total)
+
+# open a new figure and plot the time base
+plt.figure()
+plt.plot(t)
+plt.title("Time base vector")
+plt.xlabel("samples")
+plt.ylabel("time")
+\end{lstlisting}
+
+We can make a few checks to confirm this time base is indeed what we expected it to be:
+
+\begin{itemize}
+	\item We can verify how many samples this time base has by typing {\tt t.shape} in the IPython console: this command tells us how many elements the array {\tt t} has in each of its dimensions. How many dimensions and how many elements in each dimension do you believe {\tt t} must have?
+	\item Arrays generated through {\tt np.linspace} have its elements evenly spaced, so the difference between the elements at any two consecutive indices {\tt t[i]} and {\tt t[i+1]} must be identical to the sampling interval; verify this is indeed the case. Note that Python uses zero-based indices - i.e. the first element in an array or sequence has index 0;
+	\item In Python, we can use negative indices to ``wrap around'' and read the array starting from the last elements: the last entry in an array can be accessed with the index {\tt -1}, the second-to-last entry with the index {\tt -2}, and so on. What should be the ``standard'' index for the last element of the array {\tt t}? What should its content be?
+\end{itemize}
+
+Let us now use this time base and synthesize a signal containing a 500 Hz sine wave:
+
+\begin{lstlisting}[frame=single]
+# sine wave frequency
+f0 = 500
+
+# create and plot the sine wave signal
+x = np.sin(2*np.pi*f0*t)
+
+plt.figure()
+plt.plot(t, x)
+\end{lstlisting}
+
+\begin{itemize}
+	\item Add your own title and label the axes of this new figure!
+\end{itemize}
+
+You probably cannot see much in this figure as it is; use the zoom and the pan buttons to inspect the plot in more detail, and press the ``home'' button to reset to the original view. Try to zoom in around one of the peaks; you should note that the graph appears to be continuous, but it is instead made of a series of straight lines connecting two adjacent samples. This fact can be made evident by plotting the same signal with a marker at the samples locations, and not using a line to connect them; let's use red circles (with the extra argument ``{\tt ro}'') as markers:
+
+\begin{lstlisting}[frame=single]
+plt.plot(t, x, "ro")
+\end{lstlisting}
+
+Note that unless you explicitly create a new Figure, {\tt pyplot} will add the new plot to the currently active Figure. You should now be able to visualise the individual samples created by your code; each point represents one sample of the {\tt x} array.
+
+Now, create and plot:
+
+\begin{itemize}
+	\item a sine wave of a different frequency;
+	\item a sine wave with a different amplitude;
+	\item a delayed sine wave;
+\end{itemize}
+
+\subsection{Playing Signals with {\tt pyaudio} / {\tt duplexAudio}}
+
+Let us now use the {\tt duplexAudio} module to reproduce this signal using the computer sound card and headphones; this module uses the {\tt pyaudio} module internally, and it is covered in more details in the Reference Sheet. For now, simply use the code provided below.
+
+\textbf{IMPORTANT}: Note that this audio file stream is going directly to the audio output, and thus it might be \textbf{LOUD}! Please remember to turn down the volume of your sound reproduction system (headphones or computer speakers) before playing any audio file, and then turn the volume up until you reach a comfortable listening level!
+
+\begin{lstlisting}[frame=single]
+# no need to import 'pyaudio' explicitly;
+# 'duplexAudio' does that internally
+from duplexAudio import duplexAudio
+from wavToFloat import wavToFloat
+
+# Scale the test signal to avoid clipping and numerical errors
+gain = 0.5
+
+# Set the block length for replaying the audio signal.
+blockLength = 512
+
+# Use the provided library function to play back the file
+# using defaults for arguments
+#
+# Recommended default APIs:
+# --> in Windows: audioApi = "MME"
+# --> in Linux/Ubuntu:  audioApi = "ALSA"
+# --> in Mac: audioApi = "CoreAudio"
+duplexAudio(x*gain, fs, blockLength, audioApi="MME")
+\end{lstlisting}
+
+By now, you should have a code that creates, plots and plays back a sine wave. Save your file, and try running it with a few different parameters; for example:
+
+\begin{itemize}
+	\item Plot and play sine waves at frequencies 250 Hz, 500 Hz and 750 Hz; what do you expect will happen?
+	\item Change the sampling frequency to 1000 Hz and repeat the above exercise; what do you expect will happen?
+\end{itemize}
+
+
+\subsection{Summing Signals - Fourier Synthesis}
+
+A more complicated periodic signal can be built from a sum of sine and cosine waves using Fourier synthesis; this next exercise will cover how to approximate a sawtooth wave with a partial Fourier sum. A discrete Fourier sine series can be built as the sum of the first $M$ harmonics:
+
+\begin{equation}
+	x[n] = \sum_{m=0}^{M-1} b_m \sin(2 \pi m f_0 t[n]),
+\end{equation}
+
+where $f_0$ is the fundamental frequency. You will be given a function {\tt bm\_saw(M)} that returns an array containing the first $M$ coefficients for the Fourier sine series of a sawtooth wave.
+
+Tasks such as building a Fourier series are well suited for using a {\tt for}-loop: a code section that repeats itself a fixed number of times while iterating over a sequence. See the Reference Sheet for the basic details of {\tt for}-loops
+
+\begin{lstlisting}[frame=single]
+def bm_saw(M):
+    m = np.arange(M)
+    bm = -2*((-1)**m)/(np.pi*m)
+    bm[0] = 0
+
+    return bm
+
+
+def fourier_sine(f0, bn, t):
+    x = np.zeros(t.shape[0])
+
+    for n, b in enumerate(bn):
+        x += b*np.sin(2*np.pi*n*f0*t)
+
+    return x
+
+
+fs = 44100
+dt = 1/fs
+T_max = 0.4
+f0 = 1000
+
+t = np.linspace(0, T_max-dt, fs*T_max)
+
+plt.figure()
+for N_saw in range(1, 5):
+    saw_sine = fourier_sine(f0, bm_saw(N_saw), t)
+    plt.plot(t[:2*fs//f0], saw_sine[:2*fs//f0])
+
+    duplexAudio(saw_sine, fs, 1024, audioApi='ALSA')
+\end{lstlisting}
+
+
+\subsection{Reading {\tt .wav} files}
+
+When performing experiments, the recorded data is often stored as a {\tt .wav} file; we will now proceed to read one such file and analyse it. Make sure the file {\tt file1.wav} is in your current working directory and execute the following code:
+
+\begin{lstlisting}[frame=single]
+import scipy.io.wavfile as wavio
+from wavToFloat import wavToFloat
+
+# obtain the sampling frequency and the bitstream
+fs, x_raw = wavio.read("file1.wav")
+
+# Convert the samples to floating-point numbers
+x_wav = wavToFloat(x_raw)
+
+# create the time base
+t = np.linspace(0, (x_wav.shape[0]-1)/fs, x_wav.shape[0])
+
+plt.figure()
+plt.plot(t, x_wav, "b-")
+plt.title("file1")
+plt.xlabel("Time [s]")
+plt.ylabel("Amplitude")
+\end{lstlisting}
+
+\begin{itemize}
+	\item Visually inspect the signal by using the zoom tools; what do you think this signal represents? 
+	\item Use the code for playing signals with {\tt duplexAudio} and listen to this signal; did you guess correctly?
+\end{itemize}
+
+\subsection{Array Indices and Array Content}
+
+As previously discussed, arrays and sequences are indexed; one can then read a portion of an array using slicing, denoted by square brackets after an array name. We write
+
+\begin{lstlisting}[frame=single]
+x[i:j]
+\end{lstlisting}
+
+in order to obtain all elements between indices {\tt i} (included) and {\tt j} (not included); this operation will return an array with {\tt j-i} elements. The Reference Sheet contains more information on slicing operations; make sure you understand it well.
+
+\begin{itemize}
+	\item The first segment of the {\tt file1.wav} signal contains a few milliseconds of background noise. From visual inspection, estimate the temporal length of this initial segment; how many samples does this interval corresponds to? Open a new Figure and plot this initial segment only using the slicing notation;
+	\item The second segment of this signal corresponds to an almost periodic oscillating signal; what is the approximate period of the oscillations in seconds? And in samples? Obtain a range of indices containing a single period of the oscillations and plot it;
+\end{itemize}
+
+One very important distinction to keep in mind is the difference between the \emph{index} of a given element in an array - i.e. its position in the array - and the \emph{content} of this element - i.e. the value that is stored at that position. The following exercise explores this concept.
+
+\begin{itemize}
+	\item Identify the first period of the oscillations and plot it against time in a separate Figure;
+	\item Use the {\tt np.max()} function to find the amplitude of the highest peak in this signal segment, and use the function {\tt np.argwhere()} to identify the sample where the maximum occurs;
+	\item What is the time instant (in seconds) where the maximum amplitude occurs?
+\end{itemize}

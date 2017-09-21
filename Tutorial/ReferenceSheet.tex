@@ -1,0 +1,48 @@
+\documentclass[a4paper,twoside,12pt]{article}
+\usepackage[top=1.5cm,left=1.5cm,right=1.5cm,bottom=2cm]{geometry}
+%\usepackage{setspace}
+%\doublespacing
+
+\usepackage[ansinew]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{psfrag}
+\usepackage{cite}
+\usepackage[cmex10]{amsmath}
+\usepackage{amssymb}
+\usepackage{upgreek}
+\usepackage{microtype}
+\usepackage{titling}
+\usepackage{courier}
+\usepackage{url}
+%\usepackage{lmodern}
+
+% Use the 'listings' package to add code and the 'color' package to generate the highlights
+\usepackage{listings}
+\usepackage{color}
+\definecolor{grey}{rgb}{0.6,0.6,0.6}
+\lstset{language=Python,				% set it to Python language highlighting
+	basicstyle=\ttfamily\small,		% set size of fonts
+	breaklines=true,				% set automatic line breaking
+	linewidth=\textwidth,			% set size of code box
+	commentstyle=\color{grey},		% set colour of comments
+	keywordstyle=\color{blue},		% set colour of keywords
+	showstringspaces=false}			% show spaces as underscores only inside strings
+
+\title{\vspace{-2cm} University of Southampton\\Institute of Sound and Vibration Research\\MSc Sound and Vibration Studies\\Python Quick Reference Sheet}
+
+\begin{document}
+	\maketitle
+	\date{}
+	
+	\begingroup
+	\let\clearpage\relax
+	\tableofcontents
+	\endgroup
+
+	\vspace{2cm}
+	
+	\input{PythonReferenceSheet.tex}
+		
+\end{document}
