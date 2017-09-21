@@ -128,7 +128,7 @@ fs = 44100
 dt = 1/fs
 T_max = 0.4
 
-f0 = 1000
+f0 = 400
 
 t = np.linspace(0, T_max-dt, fs*T_max)
 
