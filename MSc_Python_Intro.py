@@ -149,6 +149,16 @@ def fourier_sine(f0, bn, t):
 
     return x
 
+def saw(t,fsaw,a=1,p=0):
+    '''Sawtooth wave generator
+        Frequency fsaw
+        Amplitude a
+        Phase p (between 0 and 2pi)
+
+        to match monotonic time base vector t
+    '''
+    return ((t+(p/fsaw)/(2*np.pi)) % ((1/fsaw)) - (1 / (2*fsaw))) * (2*a*fsaw)
+
 
 fs = 44100
 dt = 1/fs
@@ -165,6 +175,8 @@ N_dft = 2048
 df = fs/N_dft
 freq = np.linspace(0, fs-df, N_dft)
 
+
+
 for N_saw in range(5):
     print('N_saw = {}'.format(N_saw))
     saw_sine = fourier_sine(f0, bm_saw(N_saw), t)
@@ -179,6 +191,16 @@ for N_saw in range(5):
                 samplingFrequency=fs,
                 blockLength=512,
                 audioApi='ALSA')
+
+saw_true = saw(t,f0,p=np.pi)
+plt.figure(5)
+plt.plot(t[:2*fs//f0],saw_true[:2*fs//f0])
+plt.xlabel('Time (s)')
+plt.ylabel('Amplitude')
+SAW_TRUE = np.fft.fft(saw_true,n=N_dft)
+plt.figure(6)
+plt.semilogx(freq[:N_dft//2], 20*np.log10(np.abs(SAW_TRUE[:N_dft//2])),ls='--')
+plt.xlabel('Frequency (Hz)')
 
 # %%
 # create array with a single zero
