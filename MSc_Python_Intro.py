@@ -31,7 +31,7 @@ t = np.linspace(0, T_total-dt, fs*T_total)
 
 
 # open a new figure and plot the time base
-plt.figure()
+plt.figure(1)
 plt.plot(t)
 plt.title("Time base vector")
 plt.xlabel("samples")
@@ -43,7 +43,7 @@ f0 = 500
 # create the sine wave
 x = np.sin(2*np.pi*f0*t)
 
-plt.figure()
+plt.figure(2)
 plt.plot(t, x)
 plt.title("Sine wave")
 plt.xlabel("time [s]")
@@ -82,7 +82,7 @@ x_wav = wavToFloat(x_raw)
 # Plot the waveform
 t = np.linspace(0, (x_wav.shape[0]-1)/fs, x_wav.shape[0])
 
-plt.figure()
+plt.figure(3)
 plt.plot(t, x_wav, "b-")
 plt.title("file1")
 plt.xlabel("Time [s]")
@@ -111,7 +111,7 @@ n2 = int(t2*fs)
 x1 = x_wav[n1:n2]
 t1 = t[n1:n2]
 
-plt.figure()
+plt.figure(4)
 plt.plot(t1, x1)
 
 x_max = np.max(x1)
@@ -167,13 +167,13 @@ freq = np.linspace(0, fs-df, N_dft)
 
 for N_saw in range(5):
     print('N_saw = {}'.format(N_saw))
-    saw_sine = fourier_sine(f0, bm_saw(N_saw*2), t)
-    plt.figure(4)
+    saw_sine = fourier_sine(f0, bm_saw(N_saw), t)
+    plt.figure(5)
     plt.plot(t[:2*fs//f0], saw_sine[:2*fs//f0])
 
     SAW_SINE = np.fft.fft(saw_sine, n=N_dft)
 
-    plt.figure(5)
+    plt.figure(6)
     plt.semilogx(freq[:N_dft//2], 20*np.log10(np.abs(SAW_SINE[:N_dft//2])))
     duplexAudio(outputSignal=saw_sine,
                 samplingFrequency=fs,
@@ -195,7 +195,7 @@ y = duplexAudio(x_silence, fs, blockLength, recordLength=rec_length,
 t_rec = np.linspace(0, rec_length-(1/fs), rec_length*fs)
 
 # plot vector 'y'
-plt.figure()
+plt.figure(7)
 plt.plot(t_rec, y)
 plt.xlabel('Time [s]')
 plt.ylabel('Amplitude')
@@ -211,6 +211,6 @@ freq = np.linspace(0, fs-df, N_dft)
 y_f = np.fft.fft(y, n=N_dft)
 
 # plot spectrum of recorded signal
-plt.figure()
+plt.figure(8)
 plt.semilogx(freq[:N_dft//2], 20*np.log10(np.abs(y_f[:N_dft//2])))
 
