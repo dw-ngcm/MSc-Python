@@ -492,7 +492,7 @@ import scipy.io.wavfile as wavio
 import numpy as np
 \end{lstlisting}
 
-\subsection{Reading a {\tt .wav} File}
+\subsection{Reading and Reproducing {\tt .wav} Files}
 
 First, let us inspect the contents of a Wave file, as used by any media player of preference. This is an audio file format standard used to store an audio bitstream, similarly to the method used to store music in CDs; such files are usually recognised by their {\tt .wav} extension. Wave files store each sample as a signed {\tt N\_bits} integer (i.e. the first bit contains the sign and is not used to store amplitude data); for example, CD audio uses 16 bits per sample.
 
@@ -504,7 +504,7 @@ Before running this next example, make sure the {\tt .wav} file is located insid
 # obtain the sampling frequency and the bitstream
 fs, xRaw = wavio.read("file1.wav")
 
-# Convert the samples to float if necessary.
+# Convert the samples from int to float
 x = wavToFloat(xRaw)
 
 # Plot the waveform
@@ -522,7 +522,6 @@ Now, let us play to the Wave file recording:
 \begin{lstlisting}[frame=single]
 # Scale the test signal to avoid clipping and numerical errors
 gain = 0.5
-x *= gain
 
 # Set the block length for replaying the audio signal.
 blockLength = 1024
@@ -534,10 +533,12 @@ blockLength = 1024
 # --> in Windows: audioApi = "MME"
 # --> in Linux/Ubuntu:  audioApi = "ALSA"
 # --> in Mac: audioApi = "CoreAudio"
-duplexAudio(x, fs, blockLength, audioApi="MME")
+duplexAudio(x*gain, fs, blockLength, audioApi="MME")
 \end{lstlisting}
 
 \textbf{IMPORTANT}: Note that this audio file stream is going directly to the audio output, and thus it might be \textbf{LOUD}! Please remember to turn down the volume of your sound reproduction system (headphones or computer speakers) before playing any audio file, and then turn the volume up until you reach a comfortable listening level!
+
+\subsection{Reproducing and Recording Signals from within Python}
 
 Let us now create some signals and listen to them:
 \begin{lstlisting}[frame=single]
@@ -548,7 +549,8 @@ t = np.linspace(0, T0-dt, T0*fs)
 
 f0 = 440           # frequency of A4 note [Hz]
 
-# create and plot a sine wave
+# *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+# create, plot and play a sine wave
 x_sin = 0.25*np.sin(2*np.pi*f0*t)
 
 plt.figure()
@@ -558,18 +560,22 @@ plt.xlabel("Time [s]")
 plt.ylabel("Amplitude")
 plt.grid()
 
-# create and plot two square waves
+duplexAudio(x_sin, fs, blockLength, audioApi="MME")
+
+# *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+# create, plot and play a square waves
 x_square05 = 0.1*square(2*np.pi*f0*t, duty=0.5)
-x_square02 = 0.1*square(2*np.pi*f0*t, duty=0.2)
 
 plt.figure()
 plt.plot(t[:500], x_square05[:500])
-plt.plot(t[:500], x_square02[:500], "-.")
-plt.title("Square Waves")
+plt.title("Square Wave")
 plt.xlabel("Time [s]")
 plt.ylabel("Amplitude")
 
-# create and plot a sawtooth wave
+duplexAudio(x_square05, fs, blockLength, audioApi="MME")
+
+# *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+# create, plot and play a sawtooth wave
 x_saw = 0.1*sawtooth(2*np.pi*f0*t)
 
 plt.figure()
@@ -578,10 +584,6 @@ plt.title("Sawtooth Wave")
 plt.xlabel("Time [s]")
 plt.ylabel("Amplitude")
 
-# play the waveforms
-duplexAudio(x_sin, fs, blockLength, audioApi="MME")
-duplexAudio(x_square05, fs, blockLength, audioApi="MME")
-duplexAudio(x_square02, fs, blockLength, audioApi="MME")
 duplexAudio(x_saw, fs, blockLength, audioApi="MME")
 \end{lstlisting}
 
@@ -594,10 +596,12 @@ Note that the file being played back and the recorded file need not have the sam
 x_silence = np.zeros(1)
 
 # record 2 s of data and save in array 'y'
-y = duplexAudio(x_silence, fs, blockLength, recordLength=2, audioApi="MME")
+length = 2
+y = duplexAudio(x_silence, fs, blockLength, recordLength=length,
+                audioApi="MME")
 
 # create vector of time samples
-t2 = np.array(0, 2-(1/fs), 2*fs)
+t2 = np.linspace(0, length-dt, length*fs)
 
 # plot vector 'y'
 plt.figure()

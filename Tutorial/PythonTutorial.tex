@@ -152,7 +152,6 @@ Let us now use the {\tt duplexAudio} module to reproduce this signal using the c
 # no need to import 'pyaudio' explicitly;
 # 'duplexAudio' does that internally
 from duplexAudio import duplexAudio
-from wavToFloat import wavToFloat
 
 # Scale the test signal to avoid clipping and numerical errors
 gain = 0.5
@@ -186,9 +185,7 @@ A more complicated periodic signal can be built from a sum of sine and cosine wa
 	x[n] = \sum_{m=0}^{M-1} b_m \sin(2 \pi m f_0 t[n]),
 \end{equation}
 
-where $f_0$ is the fundamental frequency. You will be given a function {\tt bm\_saw(M)} that returns an array containing the first $M$ coefficients for the Fourier sine series of a sawtooth wave.
-
-Tasks such as building a Fourier series are well suited for using a {\tt for}-loop: a code section that repeats itself a fixed number of times while iterating over a sequence. See the Reference Sheet for the basic details of {\tt for}-loops
+where $f_0$ is the fundamental frequency. The function {\tt bm\_saw(M)} shown below returns an array containing the first $M$ coefficients for the Fourier sine series of a sawtooth wave:
 
 \begin{lstlisting}[frame=single]
 def bm_saw(M):
@@ -197,8 +194,12 @@ def bm_saw(M):
     bm[0] = 0
 
     return bm
+\end{lstlisting}
 
 
+Repeating tasks, such as building a Fourier series, are well suited for using a {\tt for}-loop: a code section that repeats itself a fixed number of times while iterating over a sequence; see the Reference Sheet for the basic details of {\tt for}-loops. The code below creates an empty array and sums a single Fourier sine component to it; modify this code so it will sum all terms based on the length of the array of coefficients {\tt bn}.
+
+\begin{lstlisting}[frame=single]
 def fourier_sine(f0, bn, t):
     x = np.zeros(t.shape[0])
 
@@ -206,7 +207,6 @@ def fourier_sine(f0, bn, t):
         x += b*np.sin(2*np.pi*n*f0*t)
 
     return x
-
 
 fs = 44100
 dt = 1/fs
@@ -275,3 +275,35 @@ One very important distinction to keep in mind is the difference between the \em
 	\item Use the {\tt np.max()} function to find the amplitude of the highest peak in this signal segment, and use the function {\tt np.argwhere()} to identify the sample where the maximum occurs;
 	\item What is the time instant (in seconds) where the maximum amplitude occurs?
 \end{itemize}
+
+
+\subsection{Conditional Statements - {\tt if}}
+
+Write a function {\tt traffic\_light(load)} that takes a floating point number load. The function should return the string:
+
+\begin{itemize}
+	\item "green" for values of load below 0.7;
+	\item "amber" for values of load equal to or greater than 0.7 but smaller than 0.9;
+	\item "red" for values of load equal to 0.9 or greater than 0.9.
+\end{itemize}
+
+Example:
+
+\begin{lstlisting}[frame=single]
+In [ ]: traffic_light(0.5)
+Out[ ]: 'green'
+\end{lstlisting}
+
+Function prototype:
+
+\begin{lstlisting}[frame=single]
+def traffic_light(load):
+    """Concise one-line sentence describing the function.
+
+    Complete function documentation, which can contain multiple
+    paragraphs. This text should appear on your 'Help' pane when
+    you write the function in the Editor or console and help you
+    use it correctly."""
+
+    return None
+\end{lstlisting}
