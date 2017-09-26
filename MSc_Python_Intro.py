@@ -2,12 +2,39 @@
 MSc Python Intro
 """
 
-# %%
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 plt.close('all')
+
+# %%
+# Functions and Control Flow
+# Python functions are started using the def keyword,
+# and typically return a value to the user.
+
+# Complete this function so that it returns a string;
+# 'green' when load is less than 0.7
+# 'amber' when load is greater than or equal to 0.7, but less than 0.9
+# 'red' when load is greater than or equal to 0.9.
+
+# use the if, elif and else commands. Remember that Python uses indentation
+# (tabs and spaces) to mark pieces of code inside defs, ifs, loops etc.
+
+# test the function in the IPython Console by first executing this cell, then
+# typing the name of the function with different numbers as the argument
+
+def traffic_light(load):
+    """Returns a string denoting the colour of a traffic light in response
+    to floating point number load"""
+    if ################
+        outputString = 'green'
+    elif  ##################
+        outputString = 'amber'
+    ##########
+    ##########
+    return outputString
+
+# %%
 
 # define a sampling frequency (in Hz)
 fs = 44100
@@ -73,6 +100,8 @@ duplexAudio(x*gain, fs, blockLength, audioApi='ALSA')
 # %% *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
 import scipy.io.wavfile as wavio
 
+from time import sleep
+
 # obtain the sampling frequency and the bitstream
 fs, x_raw = wavio.read("file1.wav")
 
@@ -95,7 +124,11 @@ plt.ylabel("Amplitude")
 
 duplexAudio(np.flipud(x_wav), fs,512)
 x_wav_2 = np.tile(x_wav,2)
+
+sleep(0.5)
 duplexAudio(x_wav_2,fs,512)
+
+sleep(0.5)
 duplexAudio(x_wav,fs*2,512)
 
 # %%
