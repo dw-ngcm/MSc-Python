@@ -26,12 +26,12 @@ plt.close('all')
 def traffic_light(load):
     """Returns a string denoting the colour of a traffic light in response
     to floating point number load"""
-    if ################
+    if ...
         outputString = 'green'
-    elif  ##################
+    elif  ...
         outputString = 'amber'
-    ##########
-    ##########
+    ...
+    ...
     return outputString
 
 # %%
@@ -103,6 +103,8 @@ import scipy.io.wavfile as wavio
 from time import sleep
 
 # obtain the sampling frequency and the bitstream
+# if you get a 'FileNotFoundError',
+# check if the current working directory is correct
 fs, x_raw = wavio.read("file1.wav")
 
 # Convert the samples to floating-point numbers
@@ -118,11 +120,27 @@ plt.xlabel("Time [s]")
 plt.ylabel("Amplitude")
 
 # Can you write a line of code to listen to the file?
-# What about in reverse?
-# Or repeated twice? investigate np.repeat and np.tile
-# Or double speed?
+# Type duplexAudio? in the IPython console to receive the function signature
+duplexAudio(...)
 
-duplexAudio(np.flipud(x_wav), fs,512)
+# Now, import file2.wav, convert it, and listen to it
+fs, x2_raw = wavio.read("file2.wav")
+x2_wav = wavToFloat(x2_raw)
+duplexAudio(x2_wav,fs,512) # obfuscate this
+
+# Do you recognise it?
+# How has this signal been made?
+# Can you transform this signal to turn it back into file1 again?
+# Use the Python help browser or the internet to find appropriate functions
+
+x2_wav_reversed = np.flipud(x2_wav) # reverse the signal
+from scipy.signal import resample # resample it to twice the original sample rate
+x2_wav_reversed_speed = resample(x2_wav_reversed, np.size(x2_wav_reversed)//2)
+
+duplexAudio(x2_wav_reversed_speed, fs, 512) # obfuscate this - this is one way
+# can also achieve speed-up by doubling the sample rate at playback.
+
+
 x_wav_2 = np.tile(x_wav,2)
 
 sleep(0.5)
