@@ -307,3 +307,22 @@ def traffic_light(load):
 
     return None
 \end{lstlisting}
+
+\subsection{Advanced Exercise: Estimating Heart Rate}
+
+This next exercise should cover a little bit of all the topics discussed so far; we expect that by the end of this Tutorial session, you should have the necessary know-how and tools to solve it at your disposal.
+
+The file {\tt ecg.wav} contains approximately 10 seconds of an ECG signal recorded from a patient. Your tasks are:
+
+\begin{itemize}
+	\item load the file and visually inspect the signal;
+	\item create a Numpy array with the data corresponding to the first 5 peaks;
+	\item use a 'for' loop to read the array in segments corresponding to each peak;
+	\item locate the peak amplitude of each segment, and find its corresponding sample value and time instant;
+	\item plot the peak locations on top of the original signal and check if you located them correctly;
+	\item calculate the average heart rate (in beats per minute - BPM) for this signal based on the time interval between the peaks.
+\end{itemize}
+
+Numpy has some in-built functions that might help with some of these tasks; do search for them. Pay extra attention to how the indices in each segment correspond to the indices in the original array; the same is valid for the time instant of each peak.
+
+The heart rate we obtained is approximately 93.7 beats per minute.

@@ -287,3 +287,58 @@ y_f = np.fft.fft(y, n=N_dft)
 plt.figure(8)
 plt.semilogx(freq[:N_dft//2], 20*np.log10(np.abs(y_f[:N_dft//2])))
 
+# %%
+"""
+Heart Rate exercise
+"""
+
+from wavToFloat import wavToFloat
+
+# read and check wav file
+fs_wav, y_wav = wavfile.read('ecg.wav')
+if y_wav.dtype is np.dtype(np.int16):
+    print('File is 16-bit!')
+
+# convert signal to float
+y_ecg = wavToFloat(y_wav)
+
+# plot signal and visually inspect for the first 5 peaks
+plt.figure()
+plt.plot(t, y_ecg)
+plt.xlabel('Time [s]')
+plt.ylabel('Amplitude')
+plt.title('ECG signal')
+
+# first 5 peaks are within the first 3 seconds (approx)
+T_5peaks = 3.
+N_5peaks = int(T_5peaks*fs)
+
+t5 = t[:N_5peaks]
+y_ecg5 = y_ecg[:N_5peaks]
+
+plt.figure()
+plt.plot(t5, y_ecg5, )
+plt.xlabel('Time [s]')
+plt.ylabel('Amplitude')
+plt.title('ECG signal (first 5 peaks)')
+
+# find period for 1 peak (in sec and in samples)
+T_1peak = T_5peaks/5
+N_1peak = int(T_1peak*fs)
+
+n_peaks = np.zeros(5, dtype='int')
+
+for p in range(5):
+    y_seg = y_ecg5[p*N_1peak:(p+1)*N_1peak]
+    n_peaks[p] = np.argmax(y_seg) + int(N_1peak*p)
+
+# mark peaks on plot
+plt.plot(t[n_peaks], y_ecg[n_peaks], 'ro')
+
+# find time instant of each peak
+t_peaks = n_peaks/fs
+
+#calculate average heart rate
+T_avg = np.mean(np.diff(t_peaks))
+
+print('The average heart rate is {:.1f} bpm'.format(60/T_avg))

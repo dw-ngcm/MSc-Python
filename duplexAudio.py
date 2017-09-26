@@ -65,9 +65,9 @@ def duplexAudio( outputSignal, samplingFrequency,
 
 
 
-    if outputSignal.ndim == 1: 
-        # Transform a signal vector as returned by scipy.io.wavfile.read() 
-        # in case of a mono file into a 2D matrix in order to hace a consistent 
+    if outputSignal.ndim == 1:
+        # Transform a signal vector as returned by scipy.io.wavfile.read()
+        # in case of a mono file into a 2D matrix in order to hace a consistent
         # handling in this function.
         outputSignal = numpy.reshape( outputSignal, [outputSignal.shape[0],1])
     numOutputChannels = outputSignal.shape[1]
@@ -103,7 +103,7 @@ def duplexAudio( outputSignal, samplingFrequency,
                     output_device_index=outputDevice,
                     frames_per_buffer=blockLength,
                     channels=paChannels,
-                    rate=samplingFrequency,  
+                    rate=samplingFrequency,
                     input=True, output=True,
                     start=False, # wait for the stream.start() call
                     stream_callback=callback )
@@ -162,6 +162,9 @@ def duplexAudio( outputSignal, samplingFrequency,
     # integral multiple of the block length )
     #if signalLength > recordLengthSamples:
     recordSignal = recordSignal[compensateLatencySamples:compensateLatencySamples+recordLengthSamples,:]
+
+    if (recordLength is None) or (numInputChannels is 0):
+        return
 
     # If the recorded channels have been padded to the number of playback channels,
     # discard the unwanted ones.
