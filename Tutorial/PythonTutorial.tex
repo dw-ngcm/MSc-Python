@@ -65,9 +65,46 @@ This concludes the setting up process; you should now be able to use {\tt duplex
 
 \section{Introduction to Python}
 
-Python is a general-purpose programming language, with a large number of modules available for scientific computing. This tutorial will cover some basic programming concepts, such as: creating arrays of numeric data, manipulating and plotting data.
+Python is a general-purpose programming language, with a large number of modules available for scientific computing. This tutorial will cover some basic programming concepts, such as conditional branching, functions, creating arrays of numeric data, manipulating and plotting data.
 
 You will receive a script containing sections of code, but some parts will be missing; use the IPython console to interact with the available data and fill in the gaps with your own code.
+
+\subsection{Conditional Statements - {\tt if}}
+
+This section is intended for new programmers - if you have not programmed before, or are new to Python, use this exercise to familiarise yourself with the Spyder IDE, and how different sections of code can be selectively run using the {\tt if} statement - a very important programming construction.
+
+Python functions begin with the {\tt def} keyword, typically {\tt return} a value to the user.  See Section 6 of the Python Reference Sheet for information on functions. 
+
+Write a function {\tt traffic\_light(load)} that takes a floating point number {\tt load}. The function should return the string:
+
+\begin{itemize}
+	\item "green" for values of load below 0.7;
+	\item "amber" for values of load equal to or greater than 0.7 but smaller than 0.9;
+	\item "red" for values of load equal to 0.9 or greater than 0.9.
+\end{itemize}
+
+Example:
+
+\begin{lstlisting}[frame=single]
+In [ ]: traffic_light(0.5)
+Out[ ]: 'green'
+\end{lstlisting}
+
+Function prototype:
+
+\begin{lstlisting}[frame=single]
+def traffic_light(load):
+	"""Returns a string denoting the colour of a traffic light in response
+	to floating point number load"""
+
+	if load ....
+		outputString = 'green'
+	elif  ..........
+		outputString = .......
+	.......
+		..........
+	return outputString
+\end{lstlisting}
 
 \subsection{Creating and Plotting Signals}
 
@@ -277,37 +314,6 @@ One very important distinction to keep in mind is the difference between the \em
 \end{itemize}
 
 
-\subsection{Conditional Statements - {\tt if}}
-
-Write a function {\tt traffic\_light(load)} that takes a floating point number load. The function should return the string:
-
-\begin{itemize}
-	\item "green" for values of load below 0.7;
-	\item "amber" for values of load equal to or greater than 0.7 but smaller than 0.9;
-	\item "red" for values of load equal to 0.9 or greater than 0.9.
-\end{itemize}
-
-Example:
-
-\begin{lstlisting}[frame=single]
-In [ ]: traffic_light(0.5)
-Out[ ]: 'green'
-\end{lstlisting}
-
-Function prototype:
-
-\begin{lstlisting}[frame=single]
-def traffic_light(load):
-    """Concise one-line sentence describing the function.
-
-    Complete function documentation, which can contain multiple
-    paragraphs. This text should appear on your 'Help' pane when
-    you write the function in the Editor or console and help you
-    use it correctly."""
-
-    return None
-\end{lstlisting}
-
 \subsection{Advanced Exercise: Estimating Heart Rate}
 
 This next exercise should cover a little bit of all the topics discussed so far; we expect that by the end of this Tutorial session, you should have the necessary know-how and tools to solve it at your disposal.
@@ -317,7 +323,7 @@ The file {\tt ecg.wav} contains approximately 10 seconds of an ECG signal record
 \begin{itemize}
 	\item load the file and visually inspect the signal;
 	\item create a Numpy array with the data corresponding to the first 5 peaks;
-	\item use a 'for' loop to read the array in segments corresponding to each peak;
+	\item use a `for' loop to read the array in segments corresponding to each peak;
 	\item locate the peak amplitude of each segment, and find its corresponding sample value and time instant;
 	\item plot the peak locations on top of the original signal and check if you located them correctly;
 	\item calculate the average heart rate (in beats per minute - BPM) for this signal based on the time interval between the peaks.
