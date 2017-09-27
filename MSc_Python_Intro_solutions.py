@@ -22,18 +22,20 @@ plt.close('all')
 # test the function in the IPython Console by first executing this cell, then
 # typing the name of the function with different numbers as the argument
 
+
 def traffic_light(load):
     """Returns a string denoting the colour of a traffic light in response
     to floating point number load"""
     if load < 0.7:
         outputString = 'green'
-    elif  load < 0.9:
+    elif load < 0.9:
         outputString = 'amber'
     else:
         outputString = 'red'
     return outputString
 
-# %% Sectiom 2.2 - Creating and Plotting Signals
+
+# %% Section 2.2 - Creating and Plotting Signals
 
 # define a sampling frequency (in Hz)
 fs = 44100
@@ -43,18 +45,10 @@ dt = 1/fs
 
 # define a total length for the time base (in seconds)
 T_total = 1.
-# create a time base using 'np.linspace' command
-# - linspace syntax: (start, end, number_of_points)
-t = np.linspace(0, T_total-dt, fs*T_total)
 
-# is this the best way to make a time vector?
-# I prefer:
-# t = np.arange(0,T_total,dt) [start,stop,step]
-# as it's easier to remember and
-# makes more semantic sense with the underlying data structure, i.e.
-# every tick is dt in length, from 0, up to but not including T_total.
-# np.diff(t)[0] = dt and max(t) = t[-1] = T-total-dt like before
-
+# create a time base using 'np.arange' command
+# -> syntax: np.arange(start, end (not included), step_size)
+t = np.arange(0, T_total, dt)
 
 # open a new figure and plot the time base
 plt.figure(1)
@@ -96,8 +90,11 @@ blockLength = 512
 
 duplexAudio(x*gain, fs, blockLength, audioApi='ALSA')
 
+# try playing at fs/2, or 2*fs
+
 # %% Section 2.4
 # fourier sine series of sawtooth wave
+
 
 def bm_saw(M):
     '''Create the first M fourier series coefficients for a sawtooth wave'''
@@ -118,14 +115,15 @@ def fourier_sine(f0, bn, t):
         bn - array - fourier sine coefficients
         t - array - time vector
     '''
-    x = np.zeros(t.shape[0]) # make an output array in the same shape as t
+    x = np.zeros(t.shape[0])    # make an output array in the same shape as t
 
     for n, b in enumerate(bn):
         x += b*np.sin(2*np.pi*n*f0*t)
 
     return x
 
-def saw(t,fsaw,a=1,p=0):
+
+def saw(t, fsaw, a=1, p=0):
     '''Sawtooth wave generator
         Frequency fsaw
         Amplitude a
@@ -142,17 +140,17 @@ T_max = 0.4
 
 f0 = 400
 
-t = np.linspace(0, T_max-dt, fs*T_max)
+t = np.arange(0, T_max, dt)
 
 # or np.arange(0,T_max,dt)
 
-#FFT parameters
+# FFT parameters
 N_dft = 2048
 df = fs/N_dft
 freq = np.linspace(0, fs-df, N_dft)
 
-
-for N_saw in range(5):
+# Synthesize saw wave from only 1 Fourier up to 4 coefficients
+for N_saw in range(1, 5):
     print('N_saw = {}'.format(N_saw))
     saw_sine = fourier_sine(f0, bm_saw(N_saw), t)
     plt.figure(5)
@@ -167,19 +165,26 @@ for N_saw in range(5):
                 blockLength=512,
                 audioApi='ALSA')
 
-saw_true = saw(t,f0,p=np.pi)
+saw_true = saw(t, f0, p=np.pi)
+
 plt.figure(5)
-plt.plot(t[:2*fs//f0],saw_true[:2*fs//f0])
+plt.plot(t[:2*fs//f0], saw_true[:2*fs//f0])
 plt.xlabel('Time (s)')
 plt.ylabel('Amplitude')
-SAW_TRUE = np.fft.fft(saw_true,n=N_dft)
+SAW_TRUE = np.fft.fft(saw_true, n=N_dft)
+
 plt.figure(6)
-plt.semilogx(freq[:N_dft//2], 20*np.log10(np.abs(SAW_TRUE[:N_dft//2])),ls='--')
+plt.semilogx(freq[:N_dft//2], 20*np.log10(np.abs(SAW_TRUE[:N_dft//2])),
+             ls='--')
 plt.xlabel('Frequency (Hz)')
+
+duplexAudio(outputSignal=saw_true,
+            samplingFrequency=fs,
+            blockLength=512,
+            audioApi='ALSA')
 
 # %% Section 2.5 - Reading wav files
 import scipy.io.wavfile as wavio
-
 from time import sleep
 
 # obtain the sampling frequency and the bitstream
@@ -191,7 +196,7 @@ fs, x_raw = wavio.read("file1.wav")
 x_wav = wavToFloat(x_raw)
 
 # Plot the waveform
-t = np.linspace(0, (x_wav.shape[0]-1)/fs, x_wav.shape[0])
+t = np.arange(0, x_raw.shape[0]/fs, 1/fs)
 
 plt.figure(3)
 plt.plot(t, x_wav, "b-")
@@ -206,64 +211,65 @@ duplexAudio(x_wav, fs, 512)
 # Now, import file2.wav, convert it, and listen to it
 fs, x2_raw = wavio.read("file2.wav")
 x2_wav = wavToFloat(x2_raw)
-duplexAudio(x2_wav,fs,512) # obfuscate this
+duplexAudio(x2_wav, fs, 512)    # obfuscate this
 
 # Do you recognise it?
 # How has this signal been made?
 # Can you transform this signal to turn it back into file1 again?
 # Use the Python help browser or the internet to find appropriate functions
 
-x2_wav_reversed = np.flipud(x2_wav) # reverse the signal
-from scipy.signal import resample # resample it to twice the original sample rate
+x2_wav_reversed = np.flipud(x2_wav)     # reverse the signal
+from scipy.signal import resample       # resample it to twice the original sample rate
 x2_wav_reversed_speed = resample(x2_wav_reversed, np.size(x2_wav_reversed)//2)
 
-duplexAudio(x2_wav_reversed_speed, fs, 512) # obfuscate this - this is one way
+duplexAudio(x2_wav_reversed_speed, fs, 512)     # obfuscate this - this is one way
 # can also achieve speed-up by doubling the sample rate at playback.
 
-x_wav_2 = np.tile(x_wav,2) # repeated twice
+x_wav_2 = np.tile(x_wav, 2)     # repeated twice
 
 sleep(0.5)
-duplexAudio(x_wav_2,fs,512)
+duplexAudio(x_wav_2, fs, 512)
 
 sleep(0.5)
-duplexAudio(x_wav,fs*2,512) # doubled sample rate
+duplexAudio(x_wav, fs*2, 512)   # doubled sample rate
 
 # %% Section 2.6 Array indices and Array Content
 
 # end of bkgd noise - found by visual inspection
-t1 = 0.065
+t0 = 0.065
+n0 = int(t0*fs)
+
+# end of 6th period of signal - found by visual inspection
+t1 = 0.07
 n1 = int(t1*fs)
 
-# end of 1st period of signal - found by visual inspection
-t2 = 0.07
-n2 = int(t2*fs)
-
-x1 = x_wav[n1:n2]
-t1 = t[n1:n2]
+x1 = x_wav[n0:n1]
+t1 = t[n0:n1]
 
 plt.figure(4)
 plt.plot(t1, x1)
+plt.title('First period of oscillations')
+plt.xlabel('Amplitude')
+plt.xlabel('Time [s]')
 
+# 1st period of oscillations only
 x_max = np.max(x1)
 n_max = np.argwhere(x1 == x_max)
 
-plt.plot(t1[n_max], x1[n_max], 'rs')
+# mark signal peak value
+plt.plot(t[n0+n_max], x1[n_max], 'rs')
 
 # %% Section 2.7 - Advanced Exercise - Estimating Heart Rate
 
 import scipy.io.wavfile as wavio # already imported above
 from wavToFloat import wavToFloat
 
-# read and check wav file
+# read wav file
 fs_wav, y_wav = wavio.read('ecg.wav')
-if y_wav.dtype is np.dtype(np.int16):
-    print('File is 16-bit!')
 
 # convert signal to float
 y_ecg = wavToFloat(y_wav)
 
-#need one or the other
-t = np.linspace(0,(len(y_ecg)-1)/fs_wav,len(y_ecg))
 t = np.arange(0,len(y_ecg)/fs_wav,1/fs_wav)
 
 # plot signal and visually inspect for the first 5 peaks

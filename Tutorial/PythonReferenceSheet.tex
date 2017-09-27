@@ -286,7 +286,7 @@ b.shape
 a.size
 b.size
 
-# check type of elements inside array
+# check data type inside array
 a.dtype
 
 # arrays use same indexing as lists
@@ -309,11 +309,11 @@ b
 
 # linspace: (start, end, number_of_points)
 # endpoint can be included (True - default behaviour) or not (False)
-c = np.linspace(0, 1, 6)
-c
+c1 = np.linspace(0, 1, 6)
+c1
 
-c = np.linspace(0, 1, 6, endpoint=False)
-c
+c2 = np.linspace(0, 1, 6, endpoint=False)
+c2
 
 # zeros: creates an array full of zeros
 # note that the tuple '(2, 3)' is considered a single input argument!
@@ -494,9 +494,9 @@ import numpy as np
 
 \subsection{Reading and Reproducing {\tt .wav} Files}
 
-First, let us inspect the contents of a Wave file, as used by any media player of preference. This is an audio file format standard used to store an audio bitstream, similarly to the method used to store music in CDs; such files are usually recognised by their {\tt .wav} extension. Wave files store each sample as a signed {\tt N\_bits} integer (i.e. the first bit contains the sign and is not used to store amplitude data); for example, CD audio uses 16 bits per sample.
+First, let us inspect the contents of a Wave file, as used by most media players. This is an audio file format standard used to store an audio bitstream, similarly to the method used to store music in CDs; such files are usually recognised by their {\tt .wav} extension. Wave files store each sample as a signed {\tt N\_bits} integer (i.e. the first bit contains the sign and is not used to store amplitude data); for example, CD audio uses 16 bits per sample.
 
-The {\tt scipy.io.wavfile} module allows for reading and writing Wave files and obtaining their bitstream. However, audio data is often manipulated using floating-point representation (such as Numpy arrays), and it is then necessary to convert the data type to Python's {\tt float} type; for this, we can use the {\tt wavToFloat} module, also available from Blackboard.
+The {\tt scipy.io.wavfile} module allows for reading and writing Wave files and obtaining their bitstream. However, audio data is often manipulated using floating-point representation (such as Numpy arrays), and it is then necessary to convert the data type to Python's {\tt float} type; for this, we can use the {\tt wavToFloat} module.
 
 Before running this next example, make sure the {\tt .wav} file is located inside the current Spyder working directory; the file should be visible to you in the ``File Explorer'' pane.
 
@@ -509,6 +509,8 @@ x = wavToFloat(xRaw)
 
 # Plot the waveform
 t = np.linspace(0, (x.shape[0]-1)/fs, x.shape[0])
+
+plt.figure()
 plt.plot(t, x, "b-")
 plt.title("file1")
 plt.xlabel("Time [s]")
@@ -524,7 +526,7 @@ Now, let us play to the Wave file recording:
 gain = 0.5
 
 # Set the block length for replaying the audio signal.
-blockLength = 1024
+blockLength = 512
 
 # Use the provided library function to play back the file
 # using defaults for arguments
